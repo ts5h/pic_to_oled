@@ -103,10 +103,19 @@ void OLED_Clear(void)
     OLED_SelectPage(0);
     
     // OLED 128* 32 pixels = total pixels -> (4096 / 1 byte) = 512 passes.
-    // SSD1306_CLEAR_SIZE  = 512 for 128* 32 or 1024  for 128*64
-    for (int i = 0; i < SSD1306_CLEAR_SIZE ; i++) 
+    // SSD1306_CLEAR_SIZE  = 512 for 128*32 or 1024 for 128*64
+    for (int i = 0; i < SSD1306_CLEAR_SIZE; i++) 
     {
       OLED_Data(0x00); // clear OLED screen  
+    }
+}
+
+void OLED_Fill(void)
+{
+    OLED_SelectPage(0);
+    for (int i = 0; i < SSD1306_CLEAR_SIZE; i++)
+    {
+        OLED_Data(0xFF); // Fill OLED screen
     }
 }
 
@@ -114,7 +123,8 @@ void OLED_Clear(void)
 void OLED_ClearLine(uint8_t page_num)
 {
     OLED_SelectPage(page_num);
-  // Clear line of 128 pixels of current page
+  
+    // Clear line of 128 pixels of current page
     for (int i = 0; i < 128 ; i++) 
     {
       OLED_Data(0x00); // clear OLED screen  
@@ -122,8 +132,8 @@ void OLED_ClearLine(uint8_t page_num)
 }
 
 // Function to select [page] i.e. row or line number
-// 128*32 has page 0-3
-// 128* 64 has page 0-7
+// 128 * 32 has page 0-3
+// 128 * 64 has page 0-7
 // Passed page num / byte
 // page 0   8 
 // page 1   16
@@ -136,8 +146,8 @@ void OLED_ClearLine(uint8_t page_num)
 
 void OLED_SelectPage(uint8_t page_num)
 {
- uint8_t result = 0xB0 | page_num; // Mask or with zero lets everything thru
- OLED_Command(result); 
- OLED_Command(SSD1306_SET_LOWER_COLUMN);
- OLED_Command(SSD1306_SET_HIGHER_COLUMN); 
+    uint8_t result = 0xB0 | page_num; // Mask or with zero lets everything thru
+    OLED_Command(result);
+    OLED_Command(SSD1306_SET_LOWER_COLUMN);
+    OLED_Command(SSD1306_SET_HIGHER_COLUMN); 
 }

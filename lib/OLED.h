@@ -93,6 +93,7 @@ void OLED_SetContrast(uint8_t);
 void OLED_WriteString(char *characters);
 void OLED_WriteCharacter(char character);
 void OLED_Clear(void);
+void OLED_Fill(void);
 void OLED_SelectPage(uint8_t);
 void OLED_ClearLine(uint8_t);
 

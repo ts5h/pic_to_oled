@@ -42,6 +42,7 @@
 */
 
 #include "mcc_generated_files/mcc.h"
+#include <stdio.h>
 #include "lib/OLED.h"
 
 /*
@@ -68,11 +69,39 @@ void main(void)
     OLED_Clear();
     __delay_ms(1000);
     
+    // Block
+    uint8_t blocks[64] = {};
+    for (int i = 0; i < sizeof(blocks); i++) {
+        // wait time
+        blocks[i] = (uint8_t) rand() % 10000 + 1 * 10;
+        
+        // color
+        blocks[i] += (uint8_t) rand() % 2;
+    }
+    
     while (1)
     {
-        // TODO: Graphic Code
+        // OLED_SelectPage(0);
+        // OLED_WriteString("Hello, World.");
+        
         OLED_SelectPage(0);
-        OLED_WriteString("TEST");
+        for (int i = 0; i < sizeof(blocks); i++) {
+            // wait time
+            int wait = blocks[i] / 10;
+            bool flag = blocks[i] % 2;
+            
+            if (wait <= 0) {
+                flag = !flag;
+                blocks[i] = (uint8_t) rand() % 10000 + 1 * 10 + flag;
+            } else {
+                wait--;
+                blocks[i] = (uint8_t) wait * 10 + flag;
+            }
+            
+            for (int j = 0; j < 16; j++) {
+                OLED_Data((uint8_t) flag ? 0xFF : 0x00);
+            }
+        }
     }
 }
 
