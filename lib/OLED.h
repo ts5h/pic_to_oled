@@ -14,6 +14,7 @@
 /*
  * Modified August 2022
  * PIC: PIC16F1705
+ * IDE: MPLAB X v6.00
  */
 
 #ifndef OLED_H
