@@ -42,7 +42,6 @@
 */
 
 #include "mcc_generated_files/mcc.h"
-#include <stdio.h>
 #include "lib/OLED.h"
 
 /*
@@ -69,39 +68,88 @@ void main(void)
     OLED_Clear();
     __delay_ms(1000);
     
+    // test
+    // OLED_SelectPage(0);
+    // OLED_WriteString("Hello, World.");
+    
+    // maximum number of array: 80
+    uint8_t blocks1[64] = {0};
+    uint8_t blocks2[64] = {0};
+    uint8_t times1[64] = {0};
+    uint8_t times2[64] = {0};
+    
     // Block
-    uint8_t blocks[64] = {};
-    for (int i = 0; i < sizeof(blocks); i++) {
-        // wait time
-        blocks[i] = (uint8_t) rand() % 10000 + 1 * 10;
+    uint8_t block1 = 0;
+    uint8_t block2 = 0;
+    
+    uint8_t wait = 0;
+    uint8_t flag = 0;
+    
+    int i = 0;
+    int j = 0;
+
+    for (i = 0; i < sizeof(blocks1); i++) {
+        wait = (uint8_t) rand() % 1000 + 1;
+        flag = (uint8_t) rand() % 2;
         
-        // color
-        blocks[i] += (uint8_t) rand() % 2;
+        blocks1[i] = wait * 10 + flag;
+        times1[i] = wait;
     }
     
+    for (i = 0; i < sizeof(blocks2); i++) {
+        wait = (uint8_t) rand() % 1000 + 1;
+        flag = (uint8_t) rand() % 2;
+        
+        blocks2[i] = wait * 10 + flag;
+        times2[i] = wait;
+    }
+    
+    // Loop
     while (1)
     {
-        // OLED_SelectPage(0);
-        // OLED_WriteString("Hello, World.");
-        
         OLED_SelectPage(0);
-        for (int i = 0; i < sizeof(blocks); i++) {
-            // wait time
-            int wait = blocks[i] / 10;
-            bool flag = blocks[i] % 2;
+        
+        for (i = 0; i < sizeof(blocks1); i++) {
+            // block1
+            wait = blocks1[i] / 10;
+            flag = blocks1[i] % 2;
+            block1 = flag ? 0b11110000 : 0b00000000;
             
             if (wait <= 0) {
                 flag = !flag;
-                blocks[i] = (uint8_t) rand() % 10000 + 1 * 10 + flag;
+                blocks1[i] = (uint8_t) times1[i] * 10 + flag;
             } else {
                 wait--;
-                blocks[i] = (uint8_t) wait * 10 + flag;
+                blocks1[i] = (uint8_t) wait * 10 + flag;
             }
             
-            for (int j = 0; j < 16; j++) {
-                OLED_Data((uint8_t) flag ? 0xFF : 0x00);
+            // block2
+            wait = blocks2[i] / 10;
+            flag = blocks2[i] % 2;
+            block2 = flag ? 0b00001111 : 0b00000000;
+            
+            if (wait <= 0) {
+                flag = !flag;
+                blocks2[i] = (uint8_t) times2[i] * 10 + flag;
+            } else {
+                wait--;
+                blocks2[i] = (uint8_t) wait * 10 + flag;
+            }
+            
+            for (j = 0; j < 16; j++) {
+                OLED_Data((uint8_t) block1 | block2);
             }
         }
+        
+//        for (i = 0; i < 64; i++) {
+//            uint8_t col = (uint8_t) rand() % 256;
+//            
+//            for (j = 0; j < 16; j++) {
+//                OLED_Data(col);
+//            }
+//        }
+        
+        __delay_ms(1);
     }
 }
 
